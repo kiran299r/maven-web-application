@@ -1,6 +1,7 @@
 node
 {
     def mavenhome=tool name:'maven3.6.2'
+    properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM('* * * * *')])])
     
     stage('CheckoutCode')
     {
@@ -25,6 +26,7 @@ node
          sh "scp target/maven-web-application.war ec2-user@13.232.238.246:/opt/apache-tomcat-9.0.34/webapps/"
          }
     }
+        
     /*
     stage('EmailNotification')
     {
