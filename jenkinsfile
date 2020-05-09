@@ -16,6 +16,7 @@ node
     {
         sh "${mavenhome}/bin/mvn sonar:sonar"
     }
+    */
     stage('Uploadartifactsintonexus')
     {
         sh "${mavenhome}/bin/mvn clean deploy"
@@ -35,5 +36,5 @@ node
         Regards
         Mithun Technologies''', subject: 'Build is over', to: 'kiran.j1213@gmail.com'
     }
-    */
+    
 }
