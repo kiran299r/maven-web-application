@@ -25,7 +25,7 @@ node
     {
         sshagent(['77ce7348-a6ec-4915-b54d-fa68471d79b1']) 
         {
-         sh "scp target/maven-web-application.war ec2-user@13.232.238.246:/opt/apache-tomcat-9.0.34/webapps/"
+         sh "scp target/maven-web-application.war ec2-user@52.66.109.7:/opt/apache-tomcat-9.0.34/webapps/"
          }
     }
         
