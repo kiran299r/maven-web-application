@@ -1,53 +1,42 @@
-node('slave1')
+node
 {
-
-def mavenHome= tool name: 'maven3.6.2'
- 
- //echo "GitHub BranhName ${env.BRANCH_NAME}"
-  echo "Jenkins Job Number ${env.BUILD_NUMBER}"
-  echo "Jenkins Node Name ${env.NODE_NAME}"
-  
-  echo "Jenkins Home ${env.JENKINS_HOME}"
-  echo "Jenkins URL ${env.JENKINS_URL}"
-  echo "JOB Name ${env.JOB_NAME}"
- 
- properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2')), pipelineTriggers([pollSCM('* * * * *')])])
-
-stage('CheckoutCode')
-{
-git branch: 'development', credentialsId: '45083ce0-8f91-4177-b9b9-570e0d26e939', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
-}
-
-stage('Build')
-{
-sh "${mavenHome}/bin/mvn clean package"
-}
-
-/*
-stage('SonarQubeReportExecution')
-{
-sh "${mavenHome}/bin/mvn sonar:sonar"
-}
-stage('UploadArtifactsIntoNexus')
-{
-sh "${mavenHome}/bin/mvn clean deploy"
-}
-stage('DeployAppIntoTomcat')
-{
-sshagent(['1da4f5e9-5116-4d8e-8aa7-5e6213816dfa']) 
-{
- sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.233.229.244:/opt/apache-tomcat-9.0.34/webapps/"
+    def mavenhome=tool name:'Maven 3.6.3'
+    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '3', numToKeepStr: '3')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+    stage('CheckoutCode')
+    {
+        git branch: 'master', credentialsId: 'Git_Credentials', url: 'https://github.com/kiran299r/maven-web-application.git'
+    }
+    stage('Build')
+    {
+        sh "${mavenhome}/bin/mvn clean package"
+    }
+    
+    stage('SonarQubereportExecution')
+    {
+        sh "${mavenhome}/bin/mvn sonar:sonar"
+    }
+    
+    
+    stage('Uploadartifactsintonexus')
+    {
+        sh "${mavenhome}/bin/mvn clean deploy"
+    }
    
-}
-}
-stage('EmailNotification')
-{
-emailext body: '''Build is over..
-Regards,
-Mithun Software Solutions,
-9980923226.''', subject: 'Build is over..', to: 'devopstrainingblr@gmail.com'
-}
-*/
+   stage('DeployetoTomcat')
+    {
+        sshagent(['80d31f12-e22a-4b28-a65e-33e6aa76b18b']) {
 
+         sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@15.206.178.180:/opt/apache-tomcat-8.5.58/webapps/"
+         }
+    }
+        
+ /*
+    stage('EmailNotification')
+    {
+        emailext body: '''Build is over
+        Regards
+        Mithun Technologies''', subject: 'Build is over', to: 'kiran.j1213@gmail.com'
+    }
+    */
 
 }
